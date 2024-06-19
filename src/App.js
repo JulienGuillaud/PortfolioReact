@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import LoginForm from "./LoginForm";
 import NavBar from "./NavBar";
 import './App.css';
-import './Computer.css'
-import './Smartphone.css'
+import './Computer.css';
+import './Smartphone.css';
 
 import { useSmartphone } from './SmartphoneContext';
-
 
 function App() {
   const isSmartphone = useSmartphone();
@@ -22,38 +21,61 @@ function App() {
   const [currentSection, setCurrentSection] = useState(0);
   const [sectionPositions, setSectionPositions] = useState([]);
 
+  const throttle = (func, limit) => {
+    let lastFunc;
+    let lastRan;
+    return function(...args) {
+      if (!lastRan) {
+        func.apply(this, args);
+        lastRan = Date.now();
+      } else {
+        clearTimeout(lastFunc);
+        lastFunc = setTimeout(() => {
+          if ((Date.now() - lastRan) >= limit) {
+            func.apply(this, args);
+            lastRan = Date.now();
+          }
+        }, limit - (Date.now() - lastRan));
+      }
+    };
+  };
+
   useEffect(() => {
-    if(!isSmartphone) {
+    if (!isSmartphone) {
       const container = document.querySelector('.App');
       const sections = document.querySelectorAll('.blur-container');
       const positions = Array.from(sections).map(sec => sec.offsetTop);
       setSectionPositions(positions);
-  
-      const handleScroll = (e) => {
-        e.preventDefault();
+
+      const handleScroll = throttle((e) => {
+        if (!isSmartphone) {
+          e.preventDefault();
+        }
         const direction = e.deltaY > 0 ? 1 : -1;
         let newSection = currentSection + direction;
         newSection = Math.max(0, Math.min(sections.length - 1, newSection));
-        // console.log("Current section:", currentSection);
-        // console.log("New section:", newSection);
         if (newSection !== currentSection) {
           setCurrentSection(newSection);
         }
-      };
-  
-      container.addEventListener('wheel', handleScroll);
+      }, 100); // Adjust the throttle limit as needed
+
+      container.addEventListener('wheel', handleScroll, { passive: false });
       return () => {
         container.removeEventListener('wheel', handleScroll);
       };
     }
-  }, [currentSection]);
+  }, [currentSection, isSmartphone]);
+
+  const scrollToPosition = (position) => {
+    window.scrollTo({
+      top: position,
+      behavior: 'smooth'
+    });
+  };
 
   useEffect(() => {
     if (sectionPositions.length > 0) {
-      window.scrollTo({
-        top: sectionPositions[currentSection] - 129,
-        behavior: 'smooth'
-      });
+      scrollToPosition(sectionPositions[currentSection] - 129);
     }
   }, [currentSection, sectionPositions]);
 
@@ -62,10 +84,10 @@ function App() {
     if (section) {
       const rect = section.getBoundingClientRect();
       const topPosition = rect.top + window.scrollY - 129;
-        window.scrollTo({
-          top: topPosition,
-          behavior: 'smooth'
-        });
+      window.scrollTo({
+        top: topPosition,
+        behavior: 'smooth'
+      });
 
       const threshold = 10; // Pixel range for considering a match
       const sectionIndex = sectionPositions.findIndex(pos => Math.abs(pos - (topPosition + 129)) <= threshold);
