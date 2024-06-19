@@ -23,27 +23,29 @@ function App() {
   const [sectionPositions, setSectionPositions] = useState([]);
 
   useEffect(() => {
-    const container = document.querySelector('.App');
-    const sections = document.querySelectorAll('.blur-container');
-    const positions = Array.from(sections).map(sec => sec.offsetTop);
-    setSectionPositions(positions);
-
-    const handleScroll = (e) => {
-      e.preventDefault();
-      const direction = e.deltaY > 0 ? 1 : -1;
-      let newSection = currentSection + direction;
-      newSection = Math.max(0, Math.min(sections.length - 1, newSection));
-      // console.log("Current section:", currentSection);
-      // console.log("New section:", newSection);
-      if (newSection !== currentSection) {
-        setCurrentSection(newSection);
-      }
-    };
-
-    container.addEventListener('wheel', handleScroll);
-    return () => {
-      container.removeEventListener('wheel', handleScroll);
-    };
+    if(!isSmartphone) {
+      const container = document.querySelector('.App');
+      const sections = document.querySelectorAll('.blur-container');
+      const positions = Array.from(sections).map(sec => sec.offsetTop);
+      setSectionPositions(positions);
+  
+      const handleScroll = (e) => {
+        e.preventDefault();
+        const direction = e.deltaY > 0 ? 1 : -1;
+        let newSection = currentSection + direction;
+        newSection = Math.max(0, Math.min(sections.length - 1, newSection));
+        // console.log("Current section:", currentSection);
+        // console.log("New section:", newSection);
+        if (newSection !== currentSection) {
+          setCurrentSection(newSection);
+        }
+      };
+  
+      container.addEventListener('wheel', handleScroll);
+      return () => {
+        container.removeEventListener('wheel', handleScroll);
+      };
+    }
   }, [currentSection]);
 
   useEffect(() => {
@@ -60,17 +62,10 @@ function App() {
     if (section) {
       const rect = section.getBoundingClientRect();
       const topPosition = rect.top + window.scrollY - 129;
-      if (!isSmartphone) {
         window.scrollTo({
           top: topPosition,
           behavior: 'smooth'
         });
-      } else {
-        window.scrollTo({
-          top: topPosition,
-          behavior: 'auto'
-        });
-      }
 
       const threshold = 10; // Pixel range for considering a match
       const sectionIndex = sectionPositions.findIndex(pos => Math.abs(pos - (topPosition + 129)) <= threshold);
@@ -85,18 +80,7 @@ function App() {
       {/* <LoginForm isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} /> */}
       {isShowLogin && <LoginForm isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} />}
       <div className="area">
-        <ul className="circles">
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-          <li></li>
-        </ul>
+        {!isSmartphone ? <ul className="circles"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul> : ""}
 
       </div>
       <div className="menu-icon" onClick={() => toggleMenu()}>
