@@ -72,6 +72,7 @@
       width: 100%;
       height: 100%;
       margin: 0;
+      height: 100vh;
    }
 
    nav.navbar.active {
