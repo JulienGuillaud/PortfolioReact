@@ -166,15 +166,7 @@
 }
 
 
-.area {
-  background-color: #4158D0;
-  background-image: linear-gradient(43deg, #5872f3 0%, #C850C0 46%, #FFCC70 100%);
-  width: 100%;
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-  position: fixed;
-}
+
 
 .circles {
   position: absolute;

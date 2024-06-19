@@ -1,6 +1,11 @@
 /* SMARTPHONE */
 @media (max-width: 768px) {
 
+   .App{
+      overflow: scroll;
+      background: linear-gradient(43deg, #5872f3 0%, #C850C0 46%, #FFCC70 100%);
+   }
+
    .section-title,
    .hero-subtitle,
    .section-text {
@@ -41,7 +46,6 @@
       /* outline: solid 2px rgba(255, 255, 255, 0.697); */
       margin-top: 5vh;
    }
-
 
 
    html,
