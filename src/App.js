@@ -2,11 +2,22 @@ import React, { useEffect, useState } from 'react';
 import LoginForm from "./LoginForm";
 import NavBar from "./NavBar";
 import './App.css';
+import './Computer.css'
+import './Smartphone.css'
+
+import { useSmartphone } from './SmartphoneContext';
+
 
 function App() {
+  const isSmartphone = useSmartphone();
   const [isShowLogin, setIsShowLogin] = useState(false);
   const handleLoginClick = () => {
     setIsShowLogin((isShowLogin) => !isShowLogin);
+  };
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
   };
   const [currentSection, setCurrentSection] = useState(0);
   const [sectionPositions, setSectionPositions] = useState([]);
@@ -49,12 +60,18 @@ function App() {
     if (section) {
       const rect = section.getBoundingClientRect();
       const topPosition = rect.top + window.scrollY - 129;
-  
-      window.scrollTo({
-        top: topPosition,
-        behavior: 'smooth'
-      });
-  
+      if (!isSmartphone) {
+        window.scrollTo({
+          top: topPosition,
+          behavior: 'smooth'
+        });
+      } else {
+        window.scrollTo({
+          top: topPosition,
+          behavior: 'auto'
+        });
+      }
+
       const threshold = 10; // Pixel range for considering a match
       const sectionIndex = sectionPositions.findIndex(pos => Math.abs(pos - (topPosition + 129)) <= threshold);
       if (sectionIndex !== -1) {
@@ -63,7 +80,8 @@ function App() {
     }
   };
   return (
-    <div className="App">
+    <div className={`App ${isSmartphone ? "smartphone" : ""}`}>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
       {/* <LoginForm isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} /> */}
       {isShowLogin && <LoginForm isShowLogin={isShowLogin} setIsShowLogin={setIsShowLogin} />}
       <div className="area">
@@ -81,15 +99,20 @@ function App() {
         </ul>
 
       </div>
+      <div className="menu-icon" onClick={() => toggleMenu()}>
+        {/* <i className={isOpen ? "fas fa-times" : "fas fa-bars"}></i> */}
+        <img src={isOpen ? "icons8-close-color-48.png" : "icons8-menu-48.png"} alt="menu" className="menu-icon-img" />
+      </div>
+      {isSmartphone ? <div className="navbar-brand"><img src="logo_new.png" alt="logo" className="logo" /></div> : ""}
       {/* <!-- <div className="hero"> --> */}
+      <NavBar handleLoginClick={handleLoginClick} scrollToSection={scrollToSection} isOpen={isOpen} />
       <div id="hero-section" className="blur-container">
-        <NavBar handleLoginClick={handleLoginClick} scrollToSection={scrollToSection} />
         <div>
           <div className="container">
-            <div className="hero-content">
-              <h1 className="hero-title">GUILLAUD Julien</h1>
+            <div className="section-content">
+              <h1 className="section-title">GUILLAUD Julien</h1>
               <h2 className="hero-subtitle">PORTFOLIO</h2>
-              <p className="hero-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+              <p className="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua.</p>
               <a href="register.html" className="hero-button">Get Started</a>
               <div className="socials">
@@ -120,10 +143,10 @@ function App() {
       <div id="section-1" className="blur-container">
         <div className="section-page">
           <div className="container">
-            <div className="about-content">
-              <h1 className="hero-title">Section 1</h1>
-              <h2 className="hero-section">Sous-titre</h2>
-              <p className="hero-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            <div className="section-content">
+              <h1 className="section-title">Section 1</h1>
+              <h2 className="section-subtitle">Sous-titre</h2>
+              <p className="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
@@ -132,10 +155,10 @@ function App() {
       <div id="section-2" className="blur-container">
         <div className="section-page">
           <div className="container">
-            <div className="about-content">
-              <h1 className="hero-title">Section 2</h1>
-              <h2 className="hero-section">Sous-titre</h2>
-              <p className="hero-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            <div className="section-content">
+              <h1 className="section-title">Section 2</h1>
+              <h2 className="section-subtitle">Sous-titre</h2>
+              <p className="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
@@ -144,10 +167,10 @@ function App() {
       <div id="section-3" className="blur-container">
         <div className="section-page">
           <div className="container">
-            <div className="about-content">
-              <h1 className="hero-title">Section 3</h1>
-              <h2 className="hero-section">Sous-titre</h2>
-              <p className="hero-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            <div className="section-content">
+              <h1 className="section-title">Section 3</h1>
+              <h2 className="section-subtitle">Sous-titre</h2>
+              <p className="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
@@ -156,10 +179,10 @@ function App() {
       <div id="section-4" className="blur-container">
         <div className="section-page">
           <div className="container">
-            <div className="about-content">
-              <h1 className="hero-title">Section 4</h1>
-              <h2 className="hero-section">Sous-titre</h2>
-              <p className="hero-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            <div className="section-content">
+              <h1 className="section-title">Section 4</h1>
+              <h2 className="section-subtitle">Sous-titre</h2>
+              <p className="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
@@ -168,10 +191,10 @@ function App() {
       <div id="section-5" className="blur-container">
         <div className="section-page">
           <div className="container">
-            <div className="about-content">
-              <h1 className="hero-title">Section 5</h1>
-              <h2 className="hero-section">Sous-titre</h2>
-              <p className="hero-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+            <div className="section-content">
+              <h1 className="section-title">Section 5</h1>
+              <h2 className="section-subtitle">Sous-titre</h2>
+              <p className="section-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua.</p>
             </div>
           </div>
@@ -187,21 +210,6 @@ function App() {
     </div>
   );
 }
-// function scrollToSection(sectionId) {
-//   const section = document.getElementById(sectionId);
-//   if (section) {
-//     const rect = section.getBoundingClientRect();
-//     const topPosition = rect.top + window.scrollY;
-//     console.log("Rect top:", rect.top);
-//     console.log("Window scrollY:", window.scrollY);
-//     console.log("Calculated topPosition:", topPosition);
-
-//     window.scrollTo({
-//       top: topPosition - 129,
-//       behavior: 'smooth'
-//     });
-//   }
-// }
 
 
 export default App;
