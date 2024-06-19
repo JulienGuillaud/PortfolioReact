@@ -1,6 +1,14 @@
 /* PC */
 @media (min-width: 769px) {
 
+
+
+   html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+   }
+
+   
    .navbar-menu,
    .navbar-buttons {
       display: flex;

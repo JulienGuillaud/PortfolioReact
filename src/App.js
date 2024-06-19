@@ -48,9 +48,7 @@ function App() {
       setSectionPositions(positions);
 
       const handleScroll = throttle((e) => {
-        if (!isSmartphone) {
-          e.preventDefault();
-        }
+        e.preventDefault();
         const direction = e.deltaY > 0 ? 1 : -1;
         let newSection = currentSection + direction;
         newSection = Math.max(0, Math.min(sections.length - 1, newSection));
@@ -74,25 +72,27 @@ function App() {
   };
 
   useEffect(() => {
-    if (sectionPositions.length > 0) {
+    if (sectionPositions.length > 0 && !isSmartphone) {
       scrollToPosition(sectionPositions[currentSection] - 129);
     }
-  }, [currentSection, sectionPositions]);
+  }, [currentSection, sectionPositions, isSmartphone]);
 
   const scrollToSection = (sectionId) => {
-    const section = document.getElementById(sectionId);
-    if (section) {
-      const rect = section.getBoundingClientRect();
-      const topPosition = rect.top + window.scrollY - 129;
-      window.scrollTo({
-        top: topPosition,
-        behavior: 'smooth'
-      });
+    if (!isSmartphone) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        const rect = section.getBoundingClientRect();
+        const topPosition = rect.top + window.scrollY - 129;
+        window.scrollTo({
+          top: topPosition,
+          behavior: 'smooth'
+        });
 
-      const threshold = 10; // Pixel range for considering a match
-      const sectionIndex = sectionPositions.findIndex(pos => Math.abs(pos - (topPosition + 129)) <= threshold);
-      if (sectionIndex !== -1) {
-        setCurrentSection(sectionIndex);
+        const threshold = 10; // Pixel range for considering a match
+        const sectionIndex = sectionPositions.findIndex(pos => Math.abs(pos - (topPosition + 129)) <= threshold);
+        if (sectionIndex !== -1) {
+          setCurrentSection(sectionIndex);
+        }
       }
     }
   };
